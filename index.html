@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRUSTWALLET [ ENERGIEKAUF ]</title>
+    <!-- QRCodeJS Library for generating dynamic QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -19,22 +21,22 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: 2rem 1rem;
             background-image: 
-                radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
         }
 
         .container {
             width: 100%;
-            max-width: 720px;
+            max-width: 680px;
             text-align: center;
-            background: rgba(18, 24, 38, 0.75);
+            background: rgba(18, 24, 38, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(16px);
             padding: 2.5rem 1.5rem;
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .logo-badge {
@@ -47,12 +49,12 @@
             font-weight: 700;
             letter-spacing: 2px;
             color: #38bdf8;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             text-transform: uppercase;
         }
 
         h1 {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
             font-weight: 800;
             letter-spacing: 1px;
             color: #ffffff;
@@ -60,11 +62,12 @@
             text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
         }
 
+        /* Countdown Grid */
         .countdown-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.875rem;
+            margin-bottom: 2.5rem;
         }
 
         @media (max-width: 500px) {
@@ -88,7 +91,7 @@
 
         .time-box span {
             display: block;
-            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             color: #38bdf8;
@@ -97,7 +100,7 @@
 
         .time-box label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #94a3b8;
             text-transform: uppercase;
@@ -105,10 +108,92 @@
             margin-top: 0.5rem;
         }
 
-        .target-info {
-            font-size: 0.875rem;
-            color: #64748b;
-            font-weight: 500;
+        /* Payment Section */
+        .payment-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 20px;
+            padding: 1.75rem;
+            margin-top: 1rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .payment-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-subtitle {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 1.25rem;
+        }
+
+        .qr-container {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .address-box {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 0.75rem;
+        }
+
+        .address-text {
+            font-family: monospace;
+            font-size: 0.825rem;
+            color: #e2e8f0;
+            word-break: break-all;
+            text-align: left;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: #022c22;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .copy-btn:hover {
+            background: #34d399;
+            transform: scale(1.02);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .notice {
+            font-size: 0.75rem;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            padding: 0.5rem;
+            border-radius: 8px;
         }
 
         .completed-message {
@@ -122,9 +207,10 @@
 <body>
 
     <div class="container">
-        <div class="logo-badge">Official Event</div>
+        <div class="logo-badge">Official Presale</div>
         <h1>TRUSTWALLET [ ENERGIEKAUF ]</h1>
 
+        <!-- Countdown -->
         <div class="countdown-grid" id="countdown">
             <div class="time-box">
                 <span id="days">00</span>
@@ -144,17 +230,35 @@
             </div>
         </div>
 
-        <div class="target-info">Target Date: October 30 at 21:00</div>
+        <!-- Payment Card -->
+        <div class="payment-card">
+            <div class="payment-title">
+                <span>Solana (SOL) Deposit Address</span>
+            </div>
+            <p class="payment-subtitle">Scan QR code or copy address to complete payment</p>
+
+            <div class="qr-container">
+                <div id="qrcode"></div>
+            </div>
+
+            <div class="address-box">
+                <span class="address-text" id="solAddress">B5M8PXbv1xTugx2NVD4t2wVUev8aB1YgwY2vUBC7LHsF</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyAddress()">Copy Address</button>
+            </div>
+
+            <div class="notice">
+                ⚠️ Send only Solana (SOL) to this address. Sending other assets may result in permanent loss.
+            </div>
+        </div>
     </div>
 
     <script>
-        // Calculates the next October 30th at 21:00:00
+        // --- Countdown Timer Logic ---
         function getTargetDate() {
             const now = new Date();
             let year = now.getFullYear();
             let target = new Date(`October 30, ${year} 21:00:00`).getTime();
             
-            // If the date for this year has passed, target next year
             if (now.getTime() > target) {
                 target = new Date(`October 30, ${year + 1} 21:00:00`).getTime();
             }
@@ -169,7 +273,7 @@
 
             if (distance <= 0) {
                 document.getElementById("countdown").innerHTML = 
-                    '<div class="completed-message">EVENT HAS STARTED</div>';
+                    '<div class="completed-message">PRESALE IS NOW LIVE</div>';
                 clearInterval(timerInterval);
                 return;
             }
@@ -187,6 +291,33 @@
 
         const timerInterval = setInterval(updateCountdown, 1000);
         updateCountdown();
+
+        // --- Generate QR Code ---
+        const solanaAddress = "B5M8PXbv1xTugx2NVD4t2wVUev8aB1YgwY2vUBC7LHsF";
+        new QRCode(document.getElementById("qrcode"), {
+            text: solanaAddress,
+            width: 140,
+            height: 140,
+            colorDark : "#0f172a",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        // --- Copy Address Function ---
+        function copyAddress() {
+            navigator.clipboard.writeText(solanaAddress).then(() => {
+                const btn = document.getElementById("copyBtn");
+                btn.innerText = "Copied! ✓";
+                btn.style.background = "#38bdf8";
+                btn.style.color = "#0f172a";
+
+                setTimeout(() => {
+                    btn.innerText = "Copy Address";
+                    btn.style.background = "#10b981";
+                    btn.style.color = "#022c22";
+                }, 2000);
+            });
+        }
     </script>
 </body>
 </html>
